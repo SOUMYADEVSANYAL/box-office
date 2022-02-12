@@ -1,3 +1,4 @@
+/*eslint-disable*/
 /* eslint-disable no-restricted-globals */
 
 // This optional code is used to register a service worker.
