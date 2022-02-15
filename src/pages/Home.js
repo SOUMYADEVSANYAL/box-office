@@ -3,6 +3,8 @@
 import React, { useState } from 'react';
 import MainPageLayout from '../components/MainPageLayout';
 import { apiGet } from '../misc/config';
+import ShowGrid from '../components/shows/ShowGrid';
+import ActorsGrid from '../components/actors/ActorsGrid';
 
 const Home = () => {
   const [input, setInput] = useState('');
@@ -18,6 +20,7 @@ const Home = () => {
   const onSearch = () => {
     apiGet(`search/${radioOption}?q=${input}`).then(result => {
       setResults(result);
+      console.log(result);
     });
   };
 
@@ -32,11 +35,11 @@ const Home = () => {
       return <div>No results found</div>;
     }
     if (results && results.length > 0) {
-      return results[0].show
-        ? results.map(item => <div key={item.show.id}>{item.show.name}</div>)
-        : results.map(item => (
-            <div key={item.person.id}>{item.person.name}</div>
-          ));
+      return results[0].show ? (
+        <ShowGrid data={results} />
+      ) : (
+        <ActorsGrid data={results} />
+      );
     }
     return null;
   };
