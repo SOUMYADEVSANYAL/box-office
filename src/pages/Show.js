@@ -1,7 +1,12 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable react/function-component-definition */
 // eslint-disable-next-line no-unused-vars
-import React, { useEffect, useState, useReducer } from 'react';
+import React, { useEffect, useReducer } from 'react';
 import { useParams } from 'react-router';
+import Cast from '../components/shows/Cast';
+import Details from '../components/shows/Details';
+import Seasons from '../components/shows/Seasons';
+import ShowMainData from '../components/shows/ShowMainData';
 import { apiGet } from '../misc/config';
 
 const reducer = (prevState, action) => {
@@ -33,10 +38,6 @@ const Show = () => {
     initialState
   );
 
-  // const [show, setShow] = useState(null);
-  // const [isLoading, setIsLoading] = useState(true);
-  // const [error, setError] = useState(null);
-
   //   https://api.tvmaze.com/shows/1?embed[]=seasons&embed[]=cast
   useEffect(() => {
     let isMounted = true;
@@ -45,16 +46,12 @@ const Show = () => {
         setTimeout(() => {
           if (isMounted) {
             dispatch({ type: 'FETCH_SUCCESS', show: results });
-            // setShow(results);
-            // setIsLoading(false);
           }
         }, 2000);
       })
       .catch(err => {
         if (isMounted) {
           dispatch({ type: 'FETCH_FAILED', error: err.message });
-          // setError(err.message);
-          // setIsLoading(false);
         }
       });
 
@@ -73,7 +70,33 @@ const Show = () => {
     return <div>Error occured: {error}</div>;
   }
 
-  return <div>This is the show page</div>;
+  return (
+    <div>
+      <ShowMainData
+        image={show.image}
+        name={show.name}
+        rating={show.rating}
+        summary={show.summary}
+        tags={show.genres}
+      />
+      <div>
+        <h2>Details</h2>
+      </div>
+      <Details
+        status={show.status}
+        network={show.network}
+        premiered={show.premiered}
+      />
+      <div>
+        <h2>Seasons</h2>
+      </div>
+      <Seasons seasons={show._embedded.seasons} />
+      <div>
+        <h2>Cast</h2>
+      </div>
+      <Cast cast={show._embedded.cast} />
+    </div>
+  );
 };
 
 export default Show;
