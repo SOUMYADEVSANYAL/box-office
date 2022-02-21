@@ -6,6 +6,7 @@ import { useParams } from 'react-router';
 import Cast from '../components/shows/Cast';
 import Details from '../components/shows/Details';
 import Seasons from '../components/shows/Seasons';
+import { InfoBlock, ShowPageWrapper } from '../components/shows/Show.styled';
 import ShowMainData from '../components/shows/ShowMainData';
 import { apiGet } from '../misc/config';
 
@@ -43,11 +44,9 @@ const Show = () => {
     let isMounted = true;
     apiGet(`shows/${id}?embed[]=seasons&embed[]=cast`)
       .then(results => {
-        setTimeout(() => {
-          if (isMounted) {
-            dispatch({ type: 'FETCH_SUCCESS', show: results });
-          }
-        }, 2000);
+        if (isMounted) {
+          dispatch({ type: 'FETCH_SUCCESS', show: results });
+        }
       })
       .catch(err => {
         if (isMounted) {
@@ -71,7 +70,7 @@ const Show = () => {
   }
 
   return (
-    <div>
+    <ShowPageWrapper>
       <ShowMainData
         image={show.image}
         name={show.name}
@@ -79,23 +78,23 @@ const Show = () => {
         summary={show.summary}
         tags={show.genres}
       />
-      <div>
+      <InfoBlock>
         <h2>Details</h2>
-      </div>
-      <Details
-        status={show.status}
-        network={show.network}
-        premiered={show.premiered}
-      />
-      <div>
+        <Details
+          status={show.status}
+          network={show.network}
+          premiered={show.premiered}
+        />
+      </InfoBlock>
+      <InfoBlock>
         <h2>Seasons</h2>
-      </div>
-      <Seasons seasons={show._embedded.seasons} />
-      <div>
+        <Seasons seasons={show._embedded.seasons} />
+      </InfoBlock>
+      <InfoBlock>
         <h2>Cast</h2>
-      </div>
-      <Cast cast={show._embedded.cast} />
-    </div>
+        <Cast cast={show._embedded.cast} />
+      </InfoBlock>
+    </ShowPageWrapper>
   );
 };
 
