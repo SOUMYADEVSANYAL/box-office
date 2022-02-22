@@ -8,58 +8,62 @@ import Details from '../components/shows/Details';
 import Seasons from '../components/shows/Seasons';
 import { InfoBlock, ShowPageWrapper } from '../components/shows/Show.styled';
 import ShowMainData from '../components/shows/ShowMainData';
+// eslint-disable-next-line no-unused-vars
 import { apiGet } from '../misc/config';
+import { useShow } from '../misc/custom-hooks';
 
-const reducer = (prevState, action) => {
-  switch (action.type) {
-    case 'FETCH_SUCCESS': {
-      return { isLoading: false, error: null, show: action.show };
-    }
+// const reducer = (prevState, action) => {
+//   switch (action.type) {
+//     case 'FETCH_SUCCESS': {
+//       return { isLoading: false, error: null, show: action.show };
+//     }
 
-    case 'FETCH_FAILED': {
-      return { ...prevState, isLoading: false, error: action.error };
-    }
+//     case 'FETCH_FAILED': {
+//       return { ...prevState, isLoading: false, error: action.error };
+//     }
 
-    default:
-      return prevState;
-  }
-};
+//     default:
+//       return prevState;
+//   }
+// };
 
-const initialState = {
-  show: null,
-  isLoading: true,
-  error: null,
-};
+// const initialState = {
+//   show: null,
+//   isLoading: true,
+//   error: null,
+// };
 
 const Show = () => {
   const { id } = useParams();
 
-  const [{ show, isLoading, error }, dispatch] = useReducer(
-    reducer,
-    initialState
-  );
+  const { show, isLoading, error } = useShow(id);
 
-  //   https://api.tvmaze.com/shows/1?embed[]=seasons&embed[]=cast
-  useEffect(() => {
-    let isMounted = true;
-    apiGet(`shows/${id}?embed[]=seasons&embed[]=cast`)
-      .then(results => {
-        if (isMounted) {
-          dispatch({ type: 'FETCH_SUCCESS', show: results });
-        }
-      })
-      .catch(err => {
-        if (isMounted) {
-          dispatch({ type: 'FETCH_FAILED', error: err.message });
-        }
-      });
+  // const [{ show, isLoading, error }, dispatch] = useReducer(
+  //   reducer,
+  //   initialState
+  // );
 
-    return () => {
-      isMounted = false;
-    };
-  }, [id]);
+  // //   https://api.tvmaze.com/shows/1?embed[]=seasons&embed[]=cast
+  // useEffect(() => {
+  //   let isMounted = true;
+  //   apiGet(`shows/${id}?embed[]=seasons&embed[]=cast`)
+  //     .then(results => {
+  //       if (isMounted) {
+  //         dispatch({ type: 'FETCH_SUCCESS', show: results });
+  //       }
+  //     })
+  //     .catch(err => {
+  //       if (isMounted) {
+  //         dispatch({ type: 'FETCH_FAILED', error: err.message });
+  //       }
+  //     });
 
-  console.log('show', show);
+  //   return () => {
+  //     isMounted = false;
+  //   };
+  // }, [id]);
+
+  // console.log('show', show);
 
   if (isLoading) {
     return <div>Data is getting loaded.</div>;
