@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/function-component-definition */
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import MainPageLayout from '../components/MainPageLayout';
 import { apiGet } from '../misc/config';
 import ShowGrid from '../components/shows/ShowGrid';
@@ -13,6 +13,20 @@ import {
 } from './Home.styled';
 import CustomRadio from '../components/CustomRadio';
 
+const renderResults = results => {
+  if (results && results.length === 0) {
+    return <div>No results found</div>;
+  }
+  if (results && results.length > 0) {
+    return results[0].show ? (
+      <ShowGrid data={results} />
+    ) : (
+      <ActorsGrid data={results} />
+    );
+  }
+  return null;
+};
+
 const Home = () => {
   const [input, setInput] = useLastQuery();
   const [results, setResults] = useState(null);
@@ -20,9 +34,12 @@ const Home = () => {
 
   const isRadioShow = radioOption === 'shows';
 
-  const onInputChange = ev => {
-    setInput(ev.target.value);
-  };
+  const onInputChange = useCallback(
+    ev => {
+      setInput(ev.target.value);
+    },
+    [setInput]
+  );
 
   const onSearch = () => {
     apiGet(`search/${radioOption}?q=${input}`).then(result => {
@@ -37,23 +54,9 @@ const Home = () => {
     }
   };
 
-  const renderResults = () => {
-    if (results && results.length === 0) {
-      return <div>No results found</div>;
-    }
-    if (results && results.length > 0) {
-      return results[0].show ? (
-        <ShowGrid data={results} />
-      ) : (
-        <ActorsGrid data={results} />
-      );
-    }
-    return null;
-  };
-
-  const onRadioChange = ev => {
+  const onRadioChange = useCallback(ev => {
     setRadioOption(ev.target.value);
-  };
+  }, []);
   return (
     <MainPageLayout>
       <SearchInput
@@ -89,7 +92,7 @@ const Home = () => {
           Search
         </button>
       </SearchButtonWrapper>
-      {renderResults()}
+      {renderResults(results)}
     </MainPageLayout>
   );
 };

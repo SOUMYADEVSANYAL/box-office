@@ -1,5 +1,5 @@
 /* eslint-disable react/function-component-definition */
-import React from 'react';
+import React, { memo } from 'react';
 // eslint-disable-next-line no-unused-vars
 import { Link, useLocation } from 'react-router-dom';
 import { NavList, LinkStyled } from './Navs.styled';
@@ -28,4 +28,4 @@ const Navs = () => {
   );
 };
 
-export default Navs;
+export default memo(Navs);
